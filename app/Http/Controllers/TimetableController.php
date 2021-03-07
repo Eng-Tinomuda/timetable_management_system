@@ -13,7 +13,10 @@ class TimetableController extends Controller
     }
 
     public function show($id){
-        $timetable = Timetable::all();
+        $timetable = DB::table('timetables')
+                    ->join('users', 'users.id', '=', 'timetables.teacher')
+                    ->where('timetables.academic_periods_id', '=', $id)
+                    ->paginate(10);
 
         $users = DB::table('users')
                 ->where('role', '=', 'teacher')
@@ -30,19 +33,44 @@ class TimetableController extends Controller
     }
 
     public function store(Request $request) {
-        $timetable = DB::table('timetables')
+
+        $result_check = DB::table('timetables')
                 ->where('academic_periods_id', '=', $request->academic_periods_id)
                 ->where('week', '=', $request->week)
                 ->where('day', '=', $request->day)
                 ->where('period', '=', $request->period)
-                ->where('duration', '=', $request->duration)
                 ->where('class', '=', $request->class)
                 ->where('teacher', '=', $request->teacher)
                 ->where('subject', '=', $request->subject)
                 ->where('classroom', '=', $request->classroom)
                 ->get();
 
-        if ($timetable->count()) {
+        $class_check = DB::table('timetables')
+                ->where('academic_periods_id', '=', $request->academic_periods_id)
+                ->where('week', '=', $request->week)
+                ->where('day', '=', $request->day)
+                ->where('class', '=', $request->class)
+                ->where('subject', '=', $request->subject)
+                ->get();
+
+        $teacher_check = DB::table('timetables')
+                ->where('academic_periods_id', '=', $request->academic_periods_id)
+                ->where('week', '=', $request->week)
+                ->where('day', '=', $request->day)
+                ->where('class', '=', $request->class)
+                ->where('teacher', '=', $request->teacher)
+                ->where('subject', '=', $request->subject)
+                ->get();
+
+        $classroom_check = DB::table('timetables')
+                ->where('academic_periods_id', '=', $request->academic_periods_id)
+                ->where('week', '=', $request->week)
+                ->where('day', '=', $request->day)
+                ->where('period', '=', $request->period)
+                ->where('classroom', '=', $request->classroom)
+                ->get();
+
+        if ($result_check->count() > 0|| $class_check->count() > 0 || $teacher_check->count() > 0|| $classroom_check->count() > 0) {
             return redirect()->back()->with('error', 'This record is clashing with the current timetable');
         }else {
             Timetable::create([

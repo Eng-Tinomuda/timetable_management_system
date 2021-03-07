@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
@@ -29,7 +30,12 @@ class LoginController extends Controller
             return redirect()->back()->with('error', 'Invalid login credentials');
         }
 
-        return redirect()->route('dashboard');
+        $query = DB::table('users')->where('email', $request->email)->get();
+        if($query[0]->role === 'administrator'){
+            return redirect()->route('dashboard');
+        }else if($query[0]->role === 'teacher'){
+            return redirect()->route('portal');
+        }
     }
 
 }
