@@ -54,9 +54,11 @@
                     <li class="p-2 hover:text-green-600">
                         <a href="{{route('dashboard')}}">{{__('Dashboard')}}</a>
                     </li>
+                    @if(Auth()->user()->role !== 'student')
                     <li class="p-2 mr-5 hover:text-green-600">
                         <a href="{{route('register')}}">{{__('Create Account')}}</a>
                     </li>
+                    @endif
                     <li class="p-2 border-l font-semibold">
                         <a href="{{route('register')}}">{{Auth()->user()->name}}</a>
                     </li>

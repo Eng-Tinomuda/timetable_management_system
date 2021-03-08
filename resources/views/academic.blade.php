@@ -9,7 +9,7 @@
         <div class="grid grid-cols-5 gap-4 flex-auto">
             @if($academic->count())
                 @foreach ($academic as $session)
-                    <a href="{{route('portal.generate', $session->id)}}">
+                    <a href="{{route('academic.generate', $session->id)}}">
                         <div class="text-center cursor-pointer items-center pt-3 border-2 border-double border-blue-500 h-24 bg-blue-500 rounded hover:bg-blue-600 hover:shadow-md hover:border-blue-600">
                             <p class="pb-2 block text-white border-b font-bold text-lg font-mono">{{$session->academic_year}}</p>
                             <p class="pt-2 text-white">{{__('Term')}} {{$session->term}}</p>

@@ -31,10 +31,13 @@ class LoginController extends Controller
         }
 
         $query = DB::table('users')->where('email', $request->email)->get();
+        
         if($query[0]->role === 'administrator'){
             return redirect()->route('dashboard');
         }else if($query[0]->role === 'teacher'){
             return redirect()->route('portal');
+        }else{
+            return redirect()->route('academic');
         }
     }
 

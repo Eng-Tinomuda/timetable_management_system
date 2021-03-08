@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AcademicSeasonController;
 use App\Http\Controllers\TimetableController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\StudentController;
 
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/', [LoginController::class, 'store']);
@@ -27,5 +28,8 @@ Route::post('/new', [AcademicSeasonController::class, 'store'])->name('term.new'
 
 Route::get('/portal', [TeacherController::class, 'index'])->name('portal');
 Route::get('/portal/{id}', [TeacherController::class, 'show'])->name('portal.generate');
+
+Route::get('/academic', [StudentController::class, 'index'])->name('academic');
+Route::get('/academic/{id}', [StudentController::class, 'show'])->name('academic.generate');
 
 Route::post('logout', [LogoutController::class, 'store'])->name('logout');
