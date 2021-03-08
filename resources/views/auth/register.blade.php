@@ -47,17 +47,34 @@
                         <label class="sr-only" for="password_confirmation">{{_('Confirm Password')}}</label>
                         <input type="password" name="password_confirmation" id="password" placeholder="Confirm password" class="bg-gray-100 border-2 p-4 w-full rounded-lg" value=""/>
                     </div>
+                    @if(Auth()->user()->role === 'teacher')
+                        <div class="mb-3">
+                            <label class="sr-only text-xs font-medium text-gray-500 uppercase tracking-wider" for="class">{{_('Classroom')}}</label>
+                            <select name="class" class="bg-gray-100 border-2 p-4 mt-1 w-full rounded-lg @error('classroom') border-red-500 @enderror">
+                                @foreach ($class as $cls)
+                                    <option value="{{ $cls }}">{{ $cls }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
                     <div class="mb-4 ml-2">
-                        <span class="text-gray-600 text-lg">Account Type</span>
+                        <span class="text-gray-600 text-lg">{{_('Account Type')}}</span>
                         <div class="mt-2">
+                            @if(Auth()->user()->role === "administrator")
                             <label class="inline-flex items-center cursor-pointer">
                             <input type="radio" class="form-radio" name="role" value="administrator">
-                            <span class="ml-2 text-gray-700">Administrator</span>
+                            <span class="ml-2 text-gray-700">{{_('Administrator')}}</span>
                             </label>
                             <label class="inline-flex items-center cursor-pointer ml-8">
                             <input type="radio" class="form-radio" name="role" value="teacher">
-                            <span class="ml-2 text-gray-700">Teacher</span>
+                            <span class="ml-2 text-gray-700">{{_('Teacher')}}</span>
                             </label>
+                            @else
+                                <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" class="form-radio" name="role" value="student">
+                                <span class="ml-2 text-gray-700">{{_('Student')}}</span>
+                                </label>
+                            @endif
                         </div>
                         @error('role')
                             <div class="text-red-500 mt-2 text-sm">
@@ -72,16 +89,39 @@
             </div>
         </div>
         <div>
-            @if($users->count())
-                @foreach($users as $user)
-                    @if(Auth()->user()->id !== $user->id)
+            @if(Auth()->user()->role === 'administrator')
+                @if($users->count())
+                    @foreach($users as $user)
+                        @if(Auth()->user()->id !== $user->id)
+                            <div class="bg-white rounded-lg hover:shadow mb-6">
+                                <div class="py-3 text-center bg-white text-gray-800">
+                                    <h1 class="text-2xl font-semibold">{{$user->name}}</h1>
+                                    <h2 class="italic">{{$user->email}}</h2>
+                                    <p class="font-mono font-medium">{{$user->role}}</p>
+                                    @if(Auth()->user()->role === 'administrator')
+                                        <form action="{{route('register.user', $user)}}" method="post" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="py-1 px-4 rounded-md border border-indigo-800 mt-3 text-indigo-800 bg-white hover:text-white hover:bg-indigo-800">Delete</button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                    {{$users->links()}}
+                @endif
+            @elseif(Auth()->user()->role === 'teacher')
+                @if ($students->count())
+                    @foreach ( $students as $student )
                         <div class="bg-white rounded-lg hover:shadow mb-6">
                             <div class="py-3 text-center bg-white text-gray-800">
-                                <h1 class="text-2xl font-semibold">{{$user->name}}</h1>
-                                <h2 class="italic">{{$user->email}}</h2>
-                                <p class="font-mono font-medium">{{$user->role}}</p>
-                                @if(Auth()->user()->role === 'administrator')
-                                    <form action="{{route('register.user', $user)}}" method="post" class="inline">
+                                <h1 class="text-2xl font-semibold">{{$student->name}}</h1>
+                                <h2 class="italic">{{$student->email}}</h2>
+                                <p class="font-mono font-medium">{{$student->role}}</p>
+                                <p class="font-mono font-medium text-lg">{{$student->class}}</p>
+                                @if(Auth()->user()->role === 'teacher')
+                                    <form action="{{route('register.student', $student->student_id)}}" method="post" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button class="py-1 px-4 rounded-md border border-indigo-800 mt-3 text-indigo-800 bg-white hover:text-white hover:bg-indigo-800">Delete</button>
@@ -89,9 +129,9 @@
                                 @endif
                             </div>
                         </div>
-                    @endif
-                @endforeach
-                {{$users->links()}}
+                    @endforeach
+                    {{$students->links()}}
+                @endif
             @endif
         </div>
     </div>

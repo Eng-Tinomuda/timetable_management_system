@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Form;
+use Illuminate\Support\Facades\DB;
 use App\Models\AcademicPeriod;
 
 class DashboardController extends Controller
@@ -29,6 +30,11 @@ class DashboardController extends Controller
 
         $status->save();
 
+        return back();
+    }
+
+    public function delete($id){
+        DB::table('users')->where('id', '=', $id)->delete();
         return back();
     }
 }

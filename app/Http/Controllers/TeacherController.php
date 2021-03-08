@@ -23,7 +23,7 @@ class TeacherController extends Controller
                     ->join('users', 'users.id', '=', 'timetables.teacher')
                     ->where('timetables.teacher', '=', Auth::user()->id)
                     ->where('timetables.academic_periods_id', '=', $id)
-                    ->paginate(1);
+                    ->paginate(10);
 
         return view('teacher', ['timetable' => $timetable]);
     }

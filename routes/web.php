@@ -18,6 +18,7 @@ Route::post('register', [RegisterController::class, 'store']);
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::post('/dashboard', [DashboardController::class, 'update'])->name('dashboard.active');
+Route::delete('/dashboard/{user}', [DashboardController::class, 'delete'])->name('register.student');
 
 Route::get('/timetable/{id}', [TimetableController::class, 'show'])->name('timetable');
 Route::post('/timetable', [TimetableController::class, 'store'])->name('timetable.generate');
